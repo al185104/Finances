@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Finances.Views.HomePage"
+             xmlns:helpers="clr-namespace:Finances.Helpers"
+             xmlns:vm="clr-namespace:Finances.ViewModels"
+             xmlns:model="clr-namespace:Finances.Models"
+             Title="HomePage">
+    <Grid x:DataType="vm:HomeViewModel"
+        BackgroundColor="Black"
+        Padding="10"
+        RowSpacing="10"
+        RowDefinitions="Auto,Auto,1.5*,*,3*,3*"
+        ColumnDefinitions="*,*"
+        ColumnSpacing="10">
+        <Label Grid.Row="0" Grid.ColumnSpan="2">
+            <Label.FormattedText>
+                <FormattedString>
+                    <Span Text="Welcome, "
+                        FontFamily="{StaticResource FontPacifico}"
+                        FontSize="34"
+                        TextColor="{StaticResource TextPrimaryColor}"/>
+                    <Span Text="Adrian" FontSize="34" FontFamily="{StaticResource FontPacifico}" 
+                        TextColor="{StaticResource TextSecondaryColor}"/>
+                </FormattedString>
+            </Label.FormattedText>
+        </Label>
+
+        <Label Grid.Row="1" Grid.ColumnSpan="2" Style="{StaticResource CaptionTextStyle}"
+            Text="Here's how your money is moving this month."/>
+
+        <Border Grid.Row="2" Grid.Column="0" StrokeShape="RoundRectangle 20 20 20 20"
+            BackgroundColor="#18181a" StrokeThickness="0">
+            <VerticalStackLayout Padding="20" VerticalOptions="Center">
+                <Label Text="{x:Static helpers:Icon.CreditCard}" FontFamily="Icons" FontSize="Large"/>
+                <Label Text="{Binding Summary.TotalSpent, StringFormat='{0:C2}'}" Style="{StaticResource HeadingTextStyle}"/>
+                <Label Text="Total Spent" Style="{StaticResource SubheadingTextStyle}" LineBreakMode="TailTruncation"/>
+            </VerticalStackLayout>
+        </Border>
+
+        <Border Grid.Row="2" Grid.Column="1" StrokeShape="RoundRectangle 20 20 20 20"
+            BackgroundColor="#18181a" StrokeThickness="0">
+            <VerticalStackLayout Padding="20" VerticalOptions="Center">
+                <Label Text="{x:Static helpers:Icon.DollarSign}" FontFamily="Icons" FontSize="Large"/>
+                <Label Text="{Binding Summary.TotalIncome, StringFormat='{0:C2}'}" Style="{StaticResource HeadingTextStyle}"/>
+                <Label Text="Total Income" Style="{StaticResource SubheadingTextStyle}" LineBreakMode="TailTruncation"/>
+            </VerticalStackLayout>
+        </Border>
+
+        <Border Grid.Row="3" Grid.ColumnSpan="2" StrokeShape="RoundRectangle 20 20 20 20"
+            BackgroundColor="{StaticResource AccentColor}" StrokeThickness="0">
+            <Grid ColumnDefinitions="Auto,*,Auto" 
+                ColumnSpacing="20"
+                Padding="20, 10">
+                <Label Grid.Column="0" Text="{x:Static helpers:Icon.Info}" 
+                    FontFamily="Icons" FontSize="Large" TextColor="{StaticResource TextAccentColor}"
+                    HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                <Label Grid.Column="1" Text="You may have spent a lot this week ~ check alternatives?" VerticalTextAlignment="Center"
+                    Style="{StaticResource BodyTextStyle}" TextColor="{StaticResource TextAccentColor}"/>
+                <Button Grid.Column="2" 
+                    Style="{StaticResource PrimaryButtonStyle}" 
+                    Text="{x:Static helpers:Icon.PlusCircle}" FontFamily="Icons" FontSize="Title"
+                    CornerRadius="20" HeightRequest="60" WidthRequest="60" Padding="0" BackgroundColor="{StaticResource ButtonBgColor}"
+                    Command="{Binding AddTransactionCommand}"/>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="4" Grid.ColumnSpan="2" StrokeShape="RoundRectangle 20 20 20 20"
+            BackgroundColor="#18181a" StrokeThickness="0" Padding="15,10">
+            <CollectionView ItemsSource="{Binding Categories}">
+                <CollectionView.Header>
+                    <Label Text="Spending by category" Style="{StaticResource SubheadingTextStyle}"/>
+                </CollectionView.Header>
+                <CollectionView.EmptyView>
+                    <Label Text="No categories to show." HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:CategoryDto">
+                        <Grid ColumnDefinitions="*,*" Padding="10">
+                            <Label Grid.Column="0" Text="{Binding Name}" Style="{StaticResource BodyTextStyle}" HorizontalTextAlignment="Start"/>
+                            <Label Grid.Column="1" Text="{Binding AmountSpent, StringFormat='{0:C2}'}" Style="{StaticResource BodyTextStyle}" HorizontalTextAlignment="End"/>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Border>
+
+        <Border Grid.Row="5" Grid.ColumnSpan="2" StrokeShape="RoundRectangle 20 20 20 20"
+            BackgroundColor="#18181a" StrokeThickness="0" Padding="15,10">
+            <CollectionView ItemsSource="{Binding Transactions}">
+                <CollectionView.Header>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0" Text="Recent activity" Style="{StaticResource SubheadingTextStyle}"/>
+                        <Label Grid.Column="1" Text="View all" Style="{StaticResource BodyTextStyle}"/>
+                    </Grid>
+                </CollectionView.Header>
+                <CollectionView.EmptyView>
+                    <Label Text="No transactions to show." HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:TransactionDto">
+                        <Grid ColumnDefinitions="*,*" Padding="10">
+                            <Label Grid.Column="0" Text="{Binding Description}" Style="{StaticResource BodyTextStyle}" HorizontalTextAlignment="Start"/>
+                            <Label Grid.Column="1" Text="{Binding Amount, StringFormat='{0:C2}'}" Style="{StaticResource BodyTextStyle}" HorizontalTextAlignment="End"/>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Border>
+
+        <ActivityIndicator 
+            Grid.Column="0" Grid.Row="0"
+            Grid.ColumnSpan="2" Grid.RowSpan="6"
+            IsRunning="{Binding IsBusy}" 
+            IsVisible="{Binding IsBusy}"
+            Color="{StaticResource AccentColor}"
+            VerticalOptions="Center"
+            HorizontalOptions="Center"
+            WidthRequest="100"
+            HeightRequest="100"/>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Finances.Views.AddTransactionPage"
+             xmlns:vm="clr-namespace:Finances.ViewModels"
+             xmlns:helpers="clr-namespace:Finances.Helpers"
+             Title="AddTransactionPage">
+    <VerticalStackLayout x:DataType="vm:AddTransactionViewModel" VerticalOptions="Fill"
+        BackgroundColor="Black"
+        Padding="10"
+        Spacing="10">
+        <Label Text="Add new transaction" Style="{StaticResource TitleTextStyle}"/>
+        <Label Text="Please fill in info about your new transaction here" Style="{StaticResource CaptionTextStyle}"/>
+
+        <Label Text="Select a category" Style="{StaticResource BodyTextStyle}"/>
+        <Picker
+            ItemsSource="{Binding Categories}" 
+            ItemDisplayBinding="{Binding Name}" 
+            SelectedItem="{Binding SelectedCategory}"
+            BackgroundColor="White"/>
+
+        <Entry Text="{Binding Request.Description}" Placeholder="Description" BackgroundColor="White"/>
+        <Entry Text="{Binding Request.Amount}" Placeholder="Amount" BackgroundColor="White" Keyboard="Numeric"/>
+
+        <Label Text="Select recurrence period"/>
+        <Picker ItemsSource="{Binding RecurrencePeriods}"
+                SelectedItem="{Binding SelectedRecurrencePeriod}"
+                BackgroundColor="White"/>
+
+        <Label Text="Select transaction type"/>
+        <Picker
+            ItemsSource="{Binding TxnTypes}" 
+            SelectedItem="{Binding SelectedTxnType}"
+            BackgroundColor="White"/>
+
+        <Label Text="Is this a recurring transaction?"/>
+        <Switch IsToggled="{Binding Request.IsRecurring}" ThumbColor="White"/>
+
+        <Button Text="Save"
+                Command="{Binding AddTransactionCommand}" 
+                VerticalOptions="End" 
+                Style="{StaticResource PrimaryButtonStyle}"
+                ImageSource="{FontImageSource Glyph={x:Static helpers:Icon.Save}, FontFamily=Icons, Color=White, Size=20}"/>
+
+    </VerticalStackLayout>
+</ContentPage>
